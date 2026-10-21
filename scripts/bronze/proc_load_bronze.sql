@@ -17,7 +17,7 @@ Usage Example:
 
 Note:
     Update the BULK INSERT file paths below to point to your local directory
-    where the project datasets are stored (e.g., 'C:\sql\dwh_project\01_datasets\...').
+    where the project datasets are stored (e.g., 'C:\sql\dwh_project\datasets\...').
 ===============================================================================
 */
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS

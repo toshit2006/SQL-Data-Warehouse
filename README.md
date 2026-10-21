@@ -20,7 +20,7 @@ An enterprise-grade modern Data Warehouse and ETL solution built on Microsoft SQ
 7. [Data Quality & Testing](#-data-quality--testing)
 8. [Setup & Execution Guide](#-setup--execution-guide)
 9. [Project Requirements & Documentation](#-project-requirements--documentation)
-10. [License & Author](#-license--author)
+10. [Author, Acknowledgements & License](#-author-acknowledgements--license)
 
 ---
 
@@ -28,15 +28,10 @@ An enterprise-grade modern Data Warehouse and ETL solution built on Microsoft SQ
 
 ```
 SQL-Data-Warehouse/
-├── 00_setup/
-│   ├── SETUP GUIDE - read me first.pdf    # Comprehensive setup guide (Windows & Mac)
-│   └── mac-docker/
-│       ├── docker-compose.yml             # Single-command SQL Server deployment for macOS
-│       └── start.command                  # Automated launch script for Docker
-├── 01_datasets/
+├── datasets/
 │   ├── source_crm/                        # CRM extracts (cust_info, prd_info, sales_details)
 │   └── source_erp/                        # ERP extracts (CUST_AZ12, LOC_A101, PX_CAT_G1V2)
-├── 02_docs/
+├── docs/
 │   ├── data_architecture.drawio          # Editable Draw.io architecture source file
 │   ├── data_architecture.png             # Medallion data architecture diagram
 │   ├── data_flow.png                     # End-to-end data lineage diagram
@@ -47,7 +42,7 @@ SQL-Data-Warehouse/
 │   ├── naming_conventions.md             # Standards for schemas, tables, and column naming
 │   ├── requirements.md                   # Business and analytical requirements
 │   └── Project_Requirements.pdf          # One-page executive requirements sheet
-├── 03_scripts/
+├── scripts/
 │   ├── init_database.sql                 # Database and schema initialization (Bronze, Silver, Gold)
 │   ├── bronze/
 │   │   ├── ddl_bronze.sql                # Table definitions for Bronze layer
@@ -57,7 +52,12 @@ SQL-Data-Warehouse/
 │   │   └── proc_load_silver.sql          # Stored procedure: Cleanse, standardize, & enrich
 │   └── gold/
 │       └── ddl_gold.sql                  # Star Schema analytical views (dims & fact)
-├── 04_tests/
+├── setup/
+│   ├── SETUP GUIDE - read me first.pdf    # Comprehensive setup guide (Windows & Mac)
+│   └── mac-docker/
+│       ├── docker-compose.yml             # Single-command SQL Server deployment for macOS
+│       └── start.command                  # Automated launch script for Docker
+├── tests/
 │   ├── quality_checks_silver.sql         # Quality validation test scripts for Silver layer
 │   └── quality_checks_gold.sql           # Referential integrity & uniqueness tests for Gold
 ├── .gitignore
@@ -71,9 +71,9 @@ SQL-Data-Warehouse/
 
 The architecture implements the modern **Medallion Architecture**, separating data processing into three distinct stages:
 
-![Data Architecture](02_docs/data_architecture.png)
+![Data Architecture](docs/data_architecture.png)
 
-> 💡 **Architecture Design File:** You can view or customize the architecture diagram directly in [draw.io](https://app.diagrams.net/) using the source file: [`02_docs/data_architecture.drawio`](02_docs/data_architecture.drawio).
+> 💡 **Architecture Design File:** You can view or customize the architecture diagram directly in [draw.io](https://app.diagrams.net/) using the source file: [`docs/data_architecture.drawio`](docs/data_architecture.drawio).
 
 ### Layer Breakdown:
 1. **Bronze Layer (Raw Ingestion):**
@@ -94,7 +94,7 @@ The architecture implements the modern **Medallion Architecture**, separating da
 
 The data pipeline connects source operational systems through progressive transformations to analytical models:
 
-![Data Flow](02_docs/data_flow.png)
+![Data Flow](docs/data_flow.png)
 
 - **Source CRM:** Supplies customer demographics (`cust_info`), product catalogs (`prd_info`), and transactional sales history (`sales_details`).
 - **Source ERP:** Supplies demographic fallbacks (`CUST_AZ12`), customer geography (`LOC_A101`), and product subcategories (`PX_CAT_G1V2`).
@@ -109,7 +109,7 @@ The data pipeline connects source operational systems through progressive transf
 
 Combining multiple source systems requires handling schema differences, missing attributes, and conflicting customer identifiers:
 
-![Data Integration](02_docs/data_integration.png)
+![Data Integration](docs/data_integration.png)
 
 - **Customer Integration:** The CRM system serves as the primary source for customer profile and marital status. ERP data (`CUST_AZ12` and `LOC_A101`) supplies geographic location (Country) and demographic fallback data (Birthdate, Gender).
 - **Product Integration:** CRM product codes link directly to ERP category definitions (`PX_CAT_G1V2`) to map granular product types, product lines, and subcategories.
@@ -120,7 +120,7 @@ Combining multiple source systems requires handling schema differences, missing 
 
 The Gold layer is modeled into a Star Schema optimized for ad-hoc analytical queries and reporting engines:
 
-![Data Model](02_docs/data_model.png)
+![Data Model](docs/data_model.png)
 
 ### Gold Entities:
 * **`gold.dim_customers`**:
@@ -135,7 +135,7 @@ The Gold layer is modeled into a Star Schema optimized for ad-hoc analytical que
   - `product_key` (FK to `dim_products`)
   - `order_date`, `shipping_date`, `due_date`, `sales_amount`, `quantity`, `price`
 
-For complete attribute descriptions and schemas, see the [Data Catalog](02_docs/data_catalog.md) and [Naming Conventions](02_docs/naming_conventions.md).
+For complete attribute descriptions and schemas, see the [Data Catalog](docs/data_catalog.md) and [Naming Conventions](docs/naming_conventions.md).
 
 ---
 
@@ -143,7 +143,7 @@ For complete attribute descriptions and schemas, see the [Data Catalog](02_docs/
 
 The ETL pipelines are implemented as modular, re-runnable SQL stored procedures equipped with error logging, execution timer telemetry, and batch tracking:
 
-![ETL Methods](02_docs/ETL.png)
+![ETL Methods](docs/ETL.png)
 
 * **`bronze.load_bronze`:**
   - Truncates raw bronze tables.
@@ -159,7 +159,7 @@ The ETL pipelines are implemented as modular, re-runnable SQL stored procedures 
 
 ## 🧪 Data Quality & Testing
 
-Data integrity is validated using automated SQL quality check scripts in [`04_tests/`](04_tests/):
+Data integrity is validated using automated SQL quality check scripts in [`tests/`](tests/):
 
 1. **Silver Layer Validations (`quality_checks_silver.sql`):**
    - Detects unwanted spaces in string fields.
@@ -177,7 +177,7 @@ Data integrity is validated using automated SQL quality check scripts in [`04_te
 ### Prerequisites
 * **SQL Server** (Developer Edition, Express, or Docker container)
 * **SQL Server Management Studio (SSMS)** or **Azure Data Studio**
-* *(Mac Users)* Docker Desktop installed (use [`00_setup/mac-docker/`](00_setup/mac-docker/))
+* *(Mac Users)* Docker Desktop installed (use [`setup/mac-docker/`](setup/mac-docker/))
 
 ### Step-by-Step Installation
 
@@ -188,7 +188,7 @@ Data integrity is validated using automated SQL quality check scripts in [`04_te
    ```
 
 2. **Database Initialization:**
-   Execute [`03_scripts/init_database.sql`](03_scripts/init_database.sql) to create the `DataWarehouse` database and configure the schemas:
+   Execute [`scripts/init_database.sql`](scripts/init_database.sql) to create the `DataWarehouse` database and configure the schemas:
    ```sql
    CREATE DATABASE DataWarehouse;
    CREATE SCHEMA bronze;
@@ -197,41 +197,43 @@ Data integrity is validated using automated SQL quality check scripts in [`04_te
    ```
 
 3. **Bronze Layer Setup & Ingestion:**
-   - Execute [`03_scripts/bronze/ddl_bronze.sql`](03_scripts/bronze/ddl_bronze.sql) to build raw landing tables.
-   - Review and configure the file paths in [`03_scripts/bronze/proc_load_bronze.sql`](03_scripts/bronze/proc_load_bronze.sql) to point to your local `01_datasets/` path.
+   - Execute [`scripts/bronze/ddl_bronze.sql`](scripts/bronze/ddl_bronze.sql) to build raw landing tables.
+   - Review and configure the file paths in [`scripts/bronze/proc_load_bronze.sql`](scripts/bronze/proc_load_bronze.sql) to point to your local `datasets/` path.
    - Execute the bronze load procedure:
      ```sql
      EXEC bronze.load_bronze;
      ```
 
 4. **Silver Layer Transformation:**
-   - Execute [`03_scripts/silver/ddl_silver.sql`](03_scripts/silver/ddl_silver.sql) to create clean silver tables.
-   - Execute [`03_scripts/silver/proc_load_silver.sql`](03_scripts/silver/proc_load_silver.sql) to run the transformation pipeline:
+   - Execute [`scripts/silver/ddl_silver.sql`](scripts/silver/ddl_silver.sql) to create clean silver tables.
+   - Execute [`scripts/silver/proc_load_silver.sql`](scripts/silver/proc_load_silver.sql) to run the transformation pipeline:
      ```sql
      EXEC silver.load_silver;
      ```
 
 5. **Gold Layer Modeling:**
-   - Execute [`03_scripts/gold/ddl_gold.sql`](03_scripts/gold/ddl_gold.sql) to build the dimensional views (`dim_customers`, `dim_products`, `fact_sales`).
+   - Execute [`scripts/gold/ddl_gold.sql`](scripts/gold/ddl_gold.sql) to build the dimensional views (`dim_customers`, `dim_products`, `fact_sales`).
 
 6. **Validate Quality:**
-   - Run [`04_tests/quality_checks_silver.sql`](04_tests/quality_checks_silver.sql) and [`04_tests/quality_checks_gold.sql`](04_tests/quality_checks_gold.sql) to confirm all tests pass.
+   - Run [`tests/quality_checks_silver.sql`](tests/quality_checks_silver.sql) and [`tests/quality_checks_gold.sql`](tests/quality_checks_gold.sql) to confirm all tests pass.
 
 ---
 
 ## 📋 Project Requirements & Documentation
 
-Detailed project specifications, architecture notes, and data dictionaries are available in [`02_docs/`](02_docs/):
-- **[Requirements Document](02_docs/requirements.md)**: Core business rules and analytics objectives.
-- **[Executive Requirements PDF](02_docs/Project_Requirements.pdf)**: One-page printable specifications.
-- **[Data Catalog](02_docs/data_catalog.md)**: Complete metadata definitions for all gold entities and columns.
-- **[Naming Conventions](02_docs/naming_conventions.md)**: Object and field naming guidelines.
-- **[Setup Guide PDF](00_setup/SETUP%20GUIDE%20-%20read%20me%20first.pdf)**: Step-by-step SQL Server setup instructions.
+Detailed project specifications, architecture notes, and data dictionaries are available in [`docs/`](docs/):
+- **[Requirements Document](docs/requirements.md)**: Core business rules and analytics objectives.
+- **[Executive Requirements PDF](docs/Project_Requirements.pdf)**: One-page printable specifications.
+- **[Data Catalog](docs/data_catalog.md)**: Complete metadata definitions for all gold entities and columns.
+- **[Naming Conventions](docs/naming_conventions.md)**: Object and field naming guidelines.
+- **[Setup Guide PDF](setup/SETUP%20GUIDE%20-%20read%20me%20first.pdf)**: Step-by-step SQL Server setup instructions.
 
 ---
 
-## 👤 Author & License
+## 👤 Author, Acknowledgements & License
 
-Developed by **[Toshit Gupta](https://github.com/toshit2006)**.
+- **Developer:** **[Toshit Gupta](https://github.com/toshit2006)**
+- **Curriculum & Guidance:** Project completed following the Modern Data Warehouse & Engineering curriculum by **Baraa Khatib Salkini (Data With Baraa)**.
 
+### License
 This project is licensed under the **[MIT License](LICENSE)** — feel free to use and adapt this project for your own data engineering learning and portfolios.
