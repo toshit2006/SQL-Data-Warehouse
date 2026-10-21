@@ -1,14 +1,26 @@
-USE [DataWarehouse]
-GO
+/*
+===============================================================================
+Stored Procedure: Load Bronze Layer (Source -> Bronze)
+===============================================================================
+Script Purpose:
+    This stored procedure loads data into the 'bronze' schema from external CSV files.
+    It performs the following actions:
+    - Truncates the bronze tables before loading data.
+    - Uses the `BULK INSERT` command to load data from CSV files into bronze tables.
 
-/****** Object:  StoredProcedure [bronze].[load_bronze]    Script Date: 19-10-2026 19:03:40 ******/
-SET ANSI_NULLS ON
-GO
+Parameters:
+    None.
+    This stored procedure does not accept any parameters or return any values.
 
-SET QUOTED_IDENTIFIER ON
-GO
+Usage Example:
+    EXEC bronze.load_bronze;
 
-CREATE OR ALTER   PROCEDURE [bronze].[load_bronze] AS
+Note:
+    Update the BULK INSERT file paths below to point to your local directory
+    where the project datasets are stored (e.g., 'C:\sql\dwh_project\01_datasets\...').
+===============================================================================
+*/
+CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
 	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME; 
 	BEGIN TRY
