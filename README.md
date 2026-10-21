@@ -1,7 +1,7 @@
 # SQL Data Warehouse & Analytics Engineering Project
 
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
-![T-SQL](https://img.shields.io/badge/T--SQL-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-ETL%20Pipelines-0078D4?style=for-the-badge)
 ![Architecture](https://img.shields.io/badge/Architecture-Medallion%20(Bronze%2FSilver%2FGold)-blueviolet?style=for-the-badge)
 ![Data Modeling](https://img.shields.io/badge/Model-Star%20Schema%20(Facts%20%26%20Dims)-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
@@ -46,8 +46,7 @@ SQL-Data-Warehouse/
 │   ├── data_catalog.md                   # Full data dictionary for Gold facts and dimensions
 │   ├── naming_conventions.md             # Standards for schemas, tables, and column naming
 │   ├── requirements.md                   # Business and analytical requirements
-│   ├── Project_Requirements.pdf          # One-page executive requirements sheet
-│   └── data_layers.pdf                   # Theoretical breakdown of warehouse layers
+│   └── Project_Requirements.pdf          # One-page executive requirements sheet
 ├── 03_scripts/
 │   ├── init_database.sql                 # Database and schema initialization (Bronze, Silver, Gold)
 │   ├── bronze/
@@ -142,7 +141,7 @@ For complete attribute descriptions and schemas, see the [Data Catalog](02_docs/
 
 ## ⚙️ ETL Architecture & Stored Procedures
 
-The ETL pipelines are implemented as modular, re-runnable T-SQL stored procedures equipped with error logging, execution timer telemetry, and batch tracking:
+The ETL pipelines are implemented as modular, re-runnable SQL stored procedures equipped with error logging, execution timer telemetry, and batch tracking:
 
 ![ETL Methods](02_docs/ETL.png)
 
